@@ -8,7 +8,7 @@ cat <<EOF
 
 Welcome to InfluxData's InfluxDB (TICK stack) Droplet. 
 To keep this Droplet secure, the UFW firewall is enabled. 
-All ports are BLOCKED except 22 (SSH), 80 (HTTP), 443 (HTTPS), and 8086 (HTTP).
+All ports are BLOCKED except 22 (SSH), 80 (HTTP), and 8086 (HTTP).
 
 In a web browser, you can view:
  * The InfluxDB (TICK stack) One-Click Quickstart guide: http://do.co/influxdb1804#start
@@ -16,10 +16,9 @@ In a web browser, you can view:
  * Your Chronograf setup page: http://$myip
 
 On the server:
- * InfluxDB is running on port 8086 and is bound to the local interface.
+ * InfluxDB is running on port 8086.
+ * Chronograf is running on port 80.
  * The default InfluxDB admin password is saved in /root/.digitalocean_password
- * Certbot is preinstalled. Run it to configure HTTPS. See
-   http://do.co/influxdb1804#enable-https for more detail.
 
 For help and more information, visit http://do.co/influxdb1804
 
