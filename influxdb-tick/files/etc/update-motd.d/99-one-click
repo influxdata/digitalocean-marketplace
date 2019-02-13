@@ -6,9 +6,22 @@ myip=$(hostname -I | awk '{print$1}')
 cat <<EOF
 ********************************************************************************
 
-This is the text that will be shown in the MOTD users see when they log in via
-SSH.  This copy should include links to documentation or product informaiton
-along with any information that would helpful to users.
+Welcome to InfluxData's InfluxDB (TICK stack) Droplet. 
+To keep this Droplet secure, the UFW firewall is enabled. 
+All ports are BLOCKED except 22 (SSH), 80 (HTTP), 443 (HTTPS), and 8086 (HTTP).
+
+In a web browser, you can view:
+ * The InfluxDB (TICK stack) One-Click Quickstart guide: http://do.co/influxdb1804#start
+ * The TICK stack Getting Started guide: https://docs.influxdata.com/platform/introduction/getting-started/
+ * Your Chronograf setup page: http://$myip
+
+On the server:
+ * InfluxDB is running on port 8086 and is bound to the local interface.
+ * The default InfluxDB admin password is saved in /root/.digitalocean_password
+ * Certbot is preinstalled. Run it to configure HTTPS. See
+   http://do.co/influxdb1804#enable-https for more detail.
+
+For help and more information, visit http://do.co/influxdb1804
 
 ********************************************************************************
 To delete this message of the day: rm -rf $(readlink -f ${0})

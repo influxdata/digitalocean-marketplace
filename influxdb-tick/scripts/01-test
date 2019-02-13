@@ -7,3 +7,25 @@
 # if you use the build_image task.
 #
 echo "HELLO WORLD"
+
+wget https://dl.influxdata.com/telegraf/releases/telegraf_1.9.4-1_amd64.deb
+sudo dpkg -i telegraf_1.9.4-1_amd64.deb
+sudo systemctl stop telegraf
+sudo systemctl disable telegraf
+
+wget https://dl.influxdata.com/influxdb/releases/influxdb_1.7.2_amd64.deb
+sudo dpkg -i influxdb_1.7.2_amd64.deb
+sudo systemctl stop influxdb
+sudo systemctl disable influxdb
+
+wget https://dl.influxdata.com/chronograf/releases/chronograf_1.7.7_amd64.deb
+sudo dpkg -i chronograf_1.7.7_amd64.deb
+sudo systemctl stop chronograf
+sudo systemctl disable chronograf
+
+wget https://dl.influxdata.com/kapacitor/releases/kapacitor_1.5.2_amd64.deb
+sudo dpkg -i kapacitor_1.5.2_amd64.deb
+sudo systemctl stop kapacitor
+sudo systemctl disable kapacitor
+
+rm -r telegraf* influxdb* chronograf* kapacitor* 

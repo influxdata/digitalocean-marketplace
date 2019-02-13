@@ -1,5 +1,37 @@
-#!/bin/bash
+#!/bin/sh
 
-# Scripts in this directory will be executed by cloud-init on the first boot of droplets
-# created from your image.  Things ike generating passwords, configuration requiring IP address
-# or other items that will be unique to each instance should be done in scripts here.
+# Protect the droplet
+ufw limit ssh
+ufw allow https
+ufw allow http
+ufw allow 8086/tcp
+ufw allow 9091/tcp
+ufw --force enable
+
+#Generate InfluxDB admin password.
+influxdb_admin_password=$(openssl rand -hex 24)
+
+# Save the passwords
+cat > /root/.digitalocean_password <<EOM
+influxdb_admin_password="${influxdb_admin_password}"
+EOM
+
+# Start Telegraf
+systemctl enable telegraf
+systemctl start telegraf
+
+# Start InfluxDB
+systemctl enable influxdb
+systemctl start influxdb
+
+# Start Chronograf
+systemctl enable chronograf
+systemctl start chronograf
+
+sleep 5s
+
+influx -execute "CREATE USER admin WITH PASSWORD '${influxdb_admin_password}' WITH ALL PRIVILEGES'"
+
+# Start Kapacitor
+systemctl enable kapacitor
+systemctl start kapacitor
