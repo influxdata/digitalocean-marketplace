@@ -1,4 +1,4 @@
- #!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from fabric.api import *
@@ -23,6 +23,7 @@ def clean_up():
     run("find /var/log -mtime -1 -type f -exec truncate -s 0 {} \;")
     run("rm -rf /var/log/*.gz /var/log/*.[0-9] /var/log/*-????????")
     run("rm -rf /var/lib/cloud/instances/*")
+    run("rm -rf /var/lib/cloud/instance")
     puts("Removing keys...")
     run("rm -f /root/.ssh/authorized_keys /etc/ssh/*key*")
     run("dd if=/dev/zero of=/zerofile; sync; rm /zerofile; sync")
@@ -56,7 +57,7 @@ def install_files():
             rpath = cDir + "/" + fname
             lpath = cwd + "/files" + cDir + "/" + fname
             print('Moving File: %s' % lpath)
-            put(lpath,rpath)
+            put(lpath,rpath,mirror_local_mode=True)
 
 
     
@@ -65,6 +66,10 @@ def install_pkgs():
     """
     Install apt packages listed in APT_PACKAGES
     """
+    #Postfix won't install without a prompt without setting some things
+    #run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
+    #run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
+    run("DEBIAN_FRONTEND=noninteractive")
     print "--------------------------------------------------"
     print "Installing apt packages in packages.txt"
     print "--------------------------------------------------"
@@ -84,9 +89,6 @@ def run_scripts():
     Scripts are run in alpha-numeric order.  We recommend naming your scripts
     with a name that starts with a two digit number 01-99 to ensure run order.
     """
-    #Postfix won't install without a prompt without setting some things
-    #run("debconf-set-selections <<< \"postfix postfix/main_mailer_type string 'No Configuration'\"")
-    #run("debconf-set-selections <<< \"postfix postfix/mailname string localhost.local\"")
     print "--------------------------------------------------"
     print "Running scripts in ./scripts"
     print "--------------------------------------------------"

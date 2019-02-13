@@ -6,15 +6,29 @@ ufw allow https
 ufw allow http
 ufw allow 8086/tcp
 ufw allow 9091/tcp
+ufw allow 8888/tcp
 ufw --force enable
 
-#Generate InfluxDB admin password.
+# Copy Telegraf config
+cp /tmp/telegraf.conf /etc/telegraf/telegraf.conf
+
+# Generate InfluxDB admin username and password
+influxdb_admin_username=admin
 influxdb_admin_password=$(openssl rand -hex 24)
 
-# Save the passwords
+# Save the username and password
 cat > /root/.digitalocean_password <<EOM
+influxdb_admin_username="${influxdb_admin_username}"
 influxdb_admin_password="${influxdb_admin_password}"
 EOM
+
+# Set up configuration for authentication
+echo "INFLUX_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/telegraf
+echo "INFLUX_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/telegraf
+echo "INFLUXDB_HTTP_AUTH_ENABLED=true" >> /etc/default/influxdb
+echo "PORT=80" >> /etc/default/chronograf
+echo "KAPACITOR_INFLUXDB_0_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/kapacitor
+echo "KAPACITOR_INFLUXDB_0_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/kapacitor
 
 # Start Telegraf
 systemctl enable telegraf
@@ -30,8 +44,13 @@ systemctl start chronograf
 
 sleep 5s
 
-influx -execute "CREATE USER admin WITH PASSWORD '${influxdb_admin_password}' WITH ALL PRIVILEGES'"
+# Create the InfluxDB admin user
+influx -execute "CREATE USER ${influxdb_admin_username} WITH PASSWORD '${influxdb_admin_password}' WITH ALL PRIVILEGES"
 
 # Start Kapacitor
 systemctl enable kapacitor
 systemctl start kapacitor
+
+# Give Chronograf permissions to listen on port 80
+setcap 'cap_net_bind_service=+ep' /usr/bin/chronograf
+systemctl restart chronograf
