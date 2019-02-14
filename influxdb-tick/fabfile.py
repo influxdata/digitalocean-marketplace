@@ -22,6 +22,7 @@ def clean_up():
     run("apt-get -y autoclean")
     run("find /var/log -mtime -1 -type f -exec truncate -s 0 {} \;")
     run("rm -rf /var/log/*.gz /var/log/*.[0-9] /var/log/*-????????")
+    run("rm /var/log/auth.log")
     run("rm -rf /var/lib/cloud/instances/*")
     run("rm -rf /var/lib/cloud/instance")
     puts("Removing keys...")
