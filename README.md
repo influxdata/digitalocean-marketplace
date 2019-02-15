@@ -24,7 +24,7 @@ Next, generate a new SSH using `ssh-keygen` and copy the public key to `~/.ssh/a
 Clone this repository on the build droplet and switch into this directory (`influxdb-tick/`). Then run fabric to prepare the image droplet.
 
 ```sh
-fab build_image -H 104.248.179.242
+fab build_image -H <image-droplet-id>
 ```
 
 Now connect to the image droplet and run the [`img_check.sh`](https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/marketplace_validation/img_check.sh) script and confirm there are no issues reported before proceeding. Remove the `img_check.sh` script.
