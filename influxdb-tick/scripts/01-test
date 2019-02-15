@@ -6,7 +6,6 @@
 # remove the scripts from your build system after they have run
 # if you use the build_image task.
 #
-echo "HELLO WORLD"
 
 wget https://dl.influxdata.com/telegraf/releases/telegraf_1.9.4-1_amd64.deb
 sudo dpkg -i telegraf_1.9.4-1_amd64.deb
@@ -34,3 +33,5 @@ echo "INFLUXDB_HTTP_AUTH_ENABLED=true" >> /etc/default/influxdb
 
 apt-get -y update
 apt-get -y upgrade
+
+mv /tmp/telegraf.conf /etc/telegraf/telegraf.conf
