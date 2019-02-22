@@ -13,6 +13,7 @@ sudo systemctl stop telegraf
 
 wget https://dl.influxdata.com/influxdb/releases/influxdb_1.7.2_amd64.deb
 sudo dpkg -i influxdb_1.7.2_amd64.deb
+systemctl unmask influxdb.service
 sudo systemctl stop influxdb
 
 wget https://dl.influxdata.com/chronograf/releases/chronograf_1.7.7_amd64.deb
