@@ -26,8 +26,6 @@ sudo systemctl stop kapacitor
 
 rm -r telegraf* influxdb* chronograf* kapacitor*
 
-echo "INFLUXDB_HTTP_AUTH_ENABLED=true" >> /etc/default/influxdb
-
 apt-get -y update
 apt-get -y upgrade
 
