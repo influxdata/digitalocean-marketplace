@@ -29,10 +29,6 @@ systemctl daemon-reload
 systemctl enable influxdb
 systemctl start influxdb
 
-# Start Telegraf
-systemctl enable telegraf
-systemctl start telegraf
-
 # Start Chronograf
 systemctl enable chronograf
 systemctl start chronograf
@@ -49,3 +45,7 @@ systemctl start kapacitor
 # Give Chronograf permissions to listen on port 80
 setcap 'cap_net_bind_service=+ep' /usr/bin/chronograf
 systemctl restart chronograf
+
+# Start Telegraf
+systemctl enable telegraf
+systemctl start telegraf
