@@ -6,9 +6,6 @@ ufw allow http
 ufw allow 8086/tcp
 ufw --force enable
 
-# Copy Telegraf config
-cp /tmp/telegraf.conf /etc/telegraf/telegraf.conf
-
 # Generate InfluxDB admin username and password
 influxdb_admin_username=admin
 influxdb_admin_password=$(openssl rand -hex 24)
@@ -24,6 +21,9 @@ echo "INFLUX_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/telegraf
 echo "INFLUX_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/telegraf
 echo "KAPACITOR_INFLUXDB_0_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/kapacitor
 echo "KAPACITOR_INFLUXDB_0_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/kapacitor
+
+# Systemd Reload
+systemctl daemon-reload
 
 # Start InfluxDB
 systemctl enable influxdb
