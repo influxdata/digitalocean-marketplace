@@ -61,7 +61,7 @@ def install_files():
             put(lpath,rpath,mirror_local_mode=True)
 
 
-    
+
 
 def install_pkgs():
     """
@@ -93,12 +93,12 @@ def run_scripts():
     print "--------------------------------------------------"
     print "Running scripts in ./scripts"
     print "--------------------------------------------------"
-    
+
     cwd = os.getcwd()
     directory = cwd + "/scripts"
 
     for f in os.listdir(directory):
-        
+
         lfile = cwd + "/scripts/" + f
         rfile = "/tmp/" + f
         print("Processing script in %s" % lfile)
