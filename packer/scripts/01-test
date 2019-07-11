@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Scripts in this directory are run during the build process.
+# each script will be uploaded to /tmp on your build droplet, 
+# given execute permissions and run.  The cleanup process will
+# remove the scripts from your build system after they have run
+# if you use the build_image task.
+#
+
+curl -s https://dl.influxdata.com/telegraf/releases/telegraf_1.11.2-1_amd64.deb --output telegraf_1.11.2-1_amd64.deb
+sudo dpkg -i telegraf_1.11.2-1_amd64.deb
+sudo systemctl stop telegraf
+sudo systemctl disable telegraf
+
+curl -s https://dl.influxdata.com/influxdb/releases/influxdb_1.7.6_amd64.deb --output influxdb_1.7.6_amd64.deb
+sudo dpkg -i influxdb_1.7.6_amd64.deb
+sudo systemctl stop influxdb
+sudo systemctl disable influxdb
+
+curl -s https://dl.influxdata.com/chronograf/releases/chronograf_1.7.12_amd64.deb --output chronograf_1.7.12_amd64.deb
+sudo dpkg -i chronograf_1.7.12_amd64.deb
+sudo systemctl stop chronograf
+sudo systemctl disable chronograf
+
+curl -s https://dl.influxdata.com/kapacitor/releases/kapacitor_1.5.3_amd64.deb --output kapacitor_1.5.3_amd64.deb
+sudo dpkg -i kapacitor_1.5.3_amd64.deb
+sudo systemctl stop kapacitor
+sudo systemctl disable kapacitor
+
+rm -r telegraf* influxdb* chronograf* kapacitor* 
