@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Scripts in this directory will be executed by cloud-init on the first boot of droplets
+# created from your image.  Things ike generating passwords, configuration requiring IP address
+# or other items that will be unique to each instance should be done in scripts here.
+
+# Protect the droplet
+ufw limit ssh
+ufw allow http
+ufw allow 8086/tcp
+ufw --force enable
+
+# Generate InfluxDB admin username and password
+influxdb_admin_username=admin
+influxdb_admin_password=$(openssl rand -hex 24)
+
+# Save the username and password
+cat > /root/.digitalocean_password <<EOM
+influxdb_admin_username="${influxdb_admin_username}"
+influxdb_admin_password="${influxdb_admin_password}"
+EOM
+
+# Set up configuration for authentication
+echo "INFLUX_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/telegraf
+echo "INFLUX_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/telegraf
+echo "KAPACITOR_INFLUXDB_0_USERNAME=\"${influxdb_admin_username}\"" >> /etc/default/kapacitor
+echo "KAPACITOR_INFLUXDB_0_PASSWORD=\"${influxdb_admin_password}\"" >> /etc/default/kapacitor
+
+# Start InfluxDB
+systemctl enable influxdb
+systemctl start influxdb
+
+# Start Telegraf
+systemctl enable telegraf
+systemctl start telegraf
+
+# Start Chronograf
+systemctl enable chronograf
+systemctl start chronograf
+
+# Allow InfluxDB time to boot
+sleep 2s
+
+# Create the InfluxDB admin user
+influx -execute "CREATE USER ${influxdb_admin_username} WITH PASSWORD '${influxdb_admin_password}' WITH ALL PRIVILEGES"
+
+# Start Kapacitor
+systemctl enable kapacitor
+systemctl start kapacitor
+
+# Give Chronograf permissions to listen on port 80
+setcap 'cap_net_bind_service=+ep' /usr/bin/chronograf
+systemctl restart chronograf
