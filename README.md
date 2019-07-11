@@ -1,40 +1,55 @@
 # InfluxData images for DigitalOcean Marketplace
 
-This repository contains the source scripts for building InfluxData's listings
+This repository contains the source scripts for building InfluxData's listing
 on the DigitalOcean Marketplace. Documentation for partners using the
 DigitalOcean Marketplace can be found
 [here](https://github.com/digitalocean/marketplace-partners).
 
-## Listings
+## Listing
 
 1. InfluxDB (TICK stack)
     - This is a single image that contains the open source TICK stack
       components: Telegraf, InfluxDB, Chronograf, Kapacitor.
 
-## Building the images
+## Updating the listing
 
-The images can be built using fabric as shown in the [DO Marketplace docs](https://github.com/digitalocean/marketplace-partners/blob/master/marketplace_docs/build-an-image-fabric.md).
+Briefly review the changes to the [`packer`](https://github.com/digitalocean/marketplace-partners/tree/master/packer) directory and compare them to the contents of the `packer` directory in this repository.
+Specifically, check whether there have been any updates to the the contents of the following files:
 
-Spin up a build droplet to use to run fabric and an image droplet to use as the target for fabric, which will be used to create the image. (Fabric can be run from your local system, but a new DO environment is generally cleaner to work with.)
+- `marketplace-image.json`
+- `scripts/90-cleanup.sh`
+- `scripts/99-img_check.sh`
 
-Connect via SSH to the build droplet, then [install fabric](http://www.fabfile.org/).
+The versions for the various TICK stack components should be updated in these files:
 
-Next, generate a new SSH using `ssh-keygen` and copy the public key to `~/.ssh/authorized_keys` file on the image droplet.
+- `packer/scripts/01-test`
+- `packer/docs.md`
 
-Clone this repository on the build droplet and switch into this directory (`influxdb-tick/`). Then run fabric to prepare the image droplet.
+## Building the image
 
-```sh
-fab build_image -H <image-droplet-id>
+Install [Packer](https://www.packer.io/), which is used to automatically build the image.
+
+Set the DigitalOcean access token.
+
+```
+export DIGITALOCEAN_TOKEN=xxxx
 ```
 
-Now connect to the image droplet and run the [`img_check.sh`](https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/marketplace_validation/img_check.sh) script and confirm there are no issues reported before proceeding. Remove the `img_check.sh` script.
+Build the image with Packer.
 
-Finally, turn off the image droplet using `shutdown -h now`. In the DO web console, open the detail page for the image droplet. Navigate to the snapshots section and take a new snapshot. This creates the snapshot that will be submitted to DO.
+```
+packer build marketplace-image.json
+```
 
-The DO team will need the snapshot ID, which can be found by running the following command against the DO API using [`doctl`](https://github.com/digitalocean/doctl). (Note: `doctl` requires an access token when authenticating which is in 1Password)
+## Submitting the listing
+
+Resolve any issues with the Packer build reported before submitting the listing.
+
+Lookup the ID of the new snapshot by running the following [`doctl`](https://github.com/digitalocean/doctl) command. (Note: `doctl` requires a DigitalOcean access token to be set to authenticate.)
 
 ```sh
 doctl compute image list-user
 ```
 
-Submit the full text of the line that contains the new snapshot.
+Submit the full text of the line that contains the ID of the new snapshot to the DigitalOcean Marketplace team.
+If the [application documentation](packer/docs.md) has been updated, that will also need to be submitted to the DigitalOcean Marketplace team.

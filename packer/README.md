@@ -1,3 +1,5 @@
+__Note: This README and many of the files in this directory are copied from the [DigitalOcean's Marketplace Partners repo](https://github.com/digitalocean/marketplace-partners). Please read the [root README](../README.md) for an overview of which files are relevant to building the InfluxDB (TICK stack) image.__
+
 # Build Automation with Packer
 
 [Packer](https://www.packer.io/intro/index.html) is a tool for creating images from a single source configuration. Using this Packer template reduces the entire process of creating, configuring, validating, and snapshotting a build Droplet to a single command:
